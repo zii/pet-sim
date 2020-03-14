@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block nav %}
+捕获野生宠物[乌力]!
+{% endblock %}
+
+{% block body %}
+<div class="pure-g">
+    <div class="pure-u-1-2">
+        <p>{{ pet.Name }}</p>
+        <p>等级: 1</p>
+        <p>{% if pet.EarthAT > 0 %}地属性: {{ pet.EarthAT }}{% endif %}</p>
+        <p>{% if pet.WaterAT > 0 %}水属性: {{ pet.WaterAT }}{% endif %}</p>
+        <p>{% if pet.FireAT > 0 %}火属性: {{ pet.FireAT }}{% endif %}</p>
+        <p>{% if pet.WinkAT > 0 %}风属性: {{ pet.WinkAT }}{% endif %}</p>
+    </div>
+    <div class="pure-u-1-2">
+        <img src="/f/pet/{{ pet.ImgNo }}.gif" style="max-height: 280px">
+    </div>
+</div>
+
+<table class="pure-table pure-table-horizontal" style="width:100%">
+    <thead>
+        <tr>
+            <th></th><th>初始值</th><th>当前值</th><th>成长率</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>等级</td>
+            <td>{{ pet.BornLv }}</td>
+            <td>{{ pet.Lv }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>耐久力</td>
+            <td>{{ pet.BornPoint.0 }}</td>
+            <td>{{ pet.WorkMaxHp }}</td>
+            <td>{{ pet.GrowthHp|stringformat:"%.2f" }}</td>
+        </tr>
+        <tr>
+            <td>攻击力</td>
+            <td>{{ pet.BornPoint.1 }}</td>
+            <td>{{ pet.WorkFixStr }}</td>
+            <td>{{ pet.GrowthStr|stringformat:"%.2f" }}</td>
+        </tr>
+        <tr>
+            <td>防御力</td>
+            <td>{{ pet.BornPoint.2 }}</td>
+            <td>{{ pet.WorkFixTough }}</td>
+            <td>{{ pet.GrowthTough|stringformat:"%.2f" }}</td>
+        </tr>
+        <tr>
+            <td>敏捷力</td>
+            <td>{{ pet.BornPoint.3 }}</td>
+            <td>{{ pet.WorkFixDex }}</td>
+            <td>{{ pet.GrowthDex|stringformat:"%.2f" }}</td>
+        </tr>
+        <tr>
+            <td>总成长</td>
+            <td></td>
+            <td></td>
+            <td>{{ pet.Growth|stringformat:"%.2f" }}</td>
+        </tr>
+    </tbody>
+
+</table>
+{% endblock %}

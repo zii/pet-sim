@@ -4,11 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/zii/pet-sim/biz"
 
 	"github.com/gorilla/mux"
 
@@ -27,9 +30,16 @@ func init() {
 
 func main() {
 	flag.Parse()
+	rand.Seed(time.Now().Unix())
 
+	// init data
+	biz.InitEnemyBase("data/enemybase1.txt")
+	biz.InitChar()
+
+	// http server
 	router := mux.NewRouter()
 	router.HandleFunc("/", r_index)
+	router.HandleFunc("/newpet/{id}", r_newpet)
 	router.HandleFunc("/pet/{id}", r_pet)
 	router.PathPrefix("/f/").Handler(http.StripPrefix("/f/", http.FileServer(http.Dir("static"))))
 
