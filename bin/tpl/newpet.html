@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
 {% block nav %}
-捕获野生宠物[乌力]!
+获得一只 [{{ pet.Name }}]！
 {% endblock %}
 
 {% block body %}
 <div class="pure-g">
     <div class="pure-u-1-2">
         <p>{{ pet.Name }}</p>
-        <p>等级: 1</p>
+        <p>角色ID: {{ pet.Id }}</p>
         <p>{% if pet.EarthAT > 0 %}地属性: {{ pet.EarthAT }}{% endif %}</p>
         <p>{% if pet.WaterAT > 0 %}水属性: {{ pet.WaterAT }}{% endif %}</p>
         <p>{% if pet.FireAT > 0 %}火属性: {{ pet.FireAT }}{% endif %}</p>
-        <p>{% if pet.WinkAT > 0 %}风属性: {{ pet.WinkAT }}{% endif %}</p>
+        <p>{% if pet.WindAT > 0 %}风属性: {{ pet.WindAT }}{% endif %}</p>
     </div>
     <div class="pure-u-1-2">
         <img src="/f/pet/{{ pet.ImgNo }}.gif" style="max-height: 280px">
@@ -58,8 +58,8 @@
         </tr>
         <tr>
             <td>总成长</td>
-            <td></td>
-            <td></td>
+            <td><button class="pure-button pure-button-primary">Lv+1</button></td>
+            <td><button class="pure-button pure-button-primary">Lv+10</button></td>
             <td>{{ pet.Growth|stringformat:"%.2f" }}</td>
         </tr>
     </tbody>

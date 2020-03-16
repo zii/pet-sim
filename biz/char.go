@@ -1,7 +1,10 @@
 // 角色: 人物 or 宠物
 package biz
 
-import "sync"
+import (
+	"math/rand"
+	"sync"
+)
 
 // 角色类型
 const (
@@ -144,7 +147,7 @@ func NewCharID() int {
 
 func InitNewChar(char *Char) {
 	char.Id = NewCharID()
-	//charSet.Store(char.Id, char)
+	charSet.Store(char.Id, char)
 }
 
 // 计算出当前四维
@@ -161,4 +164,51 @@ func Char_complianceParameter(char *Char) {
 	Char_initCharWork(char)
 	char.Hp = char.WorkMaxHp
 	char.Mp = char.WorkMaxMp
+}
+
+func PetLevelUp(char *Char) {
+	var ranktab = []struct {
+		min int
+		max int
+	}{
+		{450, 500},
+		{470, 520},
+		{490, 540},
+		{510, 560},
+		{530, 580},
+		{550, 600},
+	}
+
+	var param = [4]float32{}
+	for i := 0; i < 10; i++ {
+		j := rand.Intn(4)
+		param[j] = 1.0
+	}
+	petrank := char.PetRank
+	frand := float32(ranktab[petrank].min+rand.Intn(ranktab[petrank].max-ranktab[petrank].min+1)) * 0.01
+	vital := float32(char.AllocPoint[0])
+	str := float32(char.AllocPoint[1])
+	tgh := float32(char.AllocPoint[2])
+	dex := float32(char.AllocPoint[3])
+	vital = (vital + param[0]) * frand
+	str = (str + param[1]) * frand
+	tgh = (tgh + param[2]) * frand
+	dex = (dex + param[3]) * frand
+	char.Vital += int(vital)
+	char.Str += int(str)
+	char.Tough += int(tgh)
+	char.Dex += int(dex)
+
+	char.Lv += 1
+	Char_complianceParameter(char)
+
+	// 算成长率
+	lvd := char.Lv - char.BornLv
+	if lvd > 0 {
+		char.GrowthHp = float32(char.WorkMaxHp-char.BornPoint[0]) / float32(lvd)
+		char.GrowthStr = float32(char.WorkFixStr-char.BornPoint[1]) / float32(lvd)
+		char.GrowthTough = float32(char.WorkFixTough-char.BornPoint[2]) / float32(lvd)
+		char.GrowthDex = float32(char.WorkFixDex-char.BornPoint[3]) / float32(lvd)
+		char.Growth = char.GrowthStr + char.GrowthTough + char.GrowthDex
+	}
 }

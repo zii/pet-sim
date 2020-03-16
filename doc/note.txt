@@ -59,6 +59,15 @@ ranktbl[] = {
     { 0, 0.0},
 };
 
+// 生成新野兽
+int ENEMY_createEnemy( int array, int baselevel )
+
+// 宠物升级
+int CHAR_PetLevelUp( int petindex )
+CHAR_PetAddVariableAi( petindex, AI_FIX_PETLEVELUP );
+CHAR_setInt( petindex, CHAR_LV, CHAR_getInt( petindex, CHAR_LV) +1 );
+CHAR_complianceParameter( petindex );
+CHAR_setInt( petindex , CHAR_HP , CHAR_getWorkInt( petindex , CHAR_WORKMAXHP ) );
 
 //计算伤害值
 int BATTLE_DamageCalc( int attackindex, int defindex )

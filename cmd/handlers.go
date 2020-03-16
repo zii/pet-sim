@@ -28,7 +28,8 @@ func Render(w io.Writer, path string, args pongo2.Context) {
 }
 
 func r_index(w http.ResponseWriter, r *http.Request) {
-	Render(w, "index.html", pongo2.Context{})
+	//Render(w, "test.html", pongo2.Context{})
+	http.ServeFile(w, r, "tpl/test.html")
 }
 
 func r_newpet(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +45,9 @@ func r_newpet(w http.ResponseWriter, r *http.Request) {
 	if char == nil {
 		http.NotFound(w, r)
 		return
+	}
+	for i := 0; i < 100; i++ {
+		biz.PetLevelUp(char)
 	}
 	fmt.Println("newchar:", char.Name, char.Lv, char.WorkMaxHp, char.WorkFixStr, char.WorkFixTough, char.WorkFixDex)
 	Render(w, "newpet.html", pongo2.Context{"pet": char})
