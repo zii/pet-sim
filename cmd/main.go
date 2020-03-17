@@ -39,9 +39,9 @@ func main() {
 	// http server
 	router := mux.NewRouter()
 	router.HandleFunc("/", r_index)
-	router.HandleFunc("/newpet/{id}", r_newpet)
-	router.HandleFunc("/pet/{id}", r_pet)
 	router.PathPrefix("/f/").Handler(http.StripPrefix("/f/", http.FileServer(http.Dir("static"))))
+	router.HandleFunc("/api/randpet", api_randpet)
+	router.HandleFunc("/api/levelup", api_levelup)
 
 	// Interrupt handler.
 	errc := make(chan error)

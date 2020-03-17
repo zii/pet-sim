@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>石器时代宠物模拟器</title>
+    <link rel="shotcut icon" href="/f/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/f/pure-min.css">
+    <link rel="stylesheet" href="/f/marketing.css">
+    <script src="/f/vue.js"></script>
+</head>
+
+<body>
+<div id="app">
+<div class="header">
+    <div class="home-menu pure-menu pure-menu-horizontal ">
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item">
+                <a href="/"><img src="/f/logo.gif" height="40px"></a>
+            </li>
+            <li class="pure-menu-item" style="vertical-align: bottom;padding-bottom: 4px">
+                石器时代宠物模拟器
+            </li>
+        </ul>
+    </div>
+    <div class="nav">
+        获得一只 [{{ pet.Name }}]！
+    </div>
+</div>
+
+<div class="container">
+    <div class="pure-g">
+        <div class="pure-u-1-2">
+            <p>{{ pet.Name }}</p>
+            <p>ID: {{ pet.Id }}</p>
+            <p v-if="pet.EarthAT > 0">地属性: {{ pet.EarthAT }}</p>
+            <p v-if="pet.WaterAT > 0">水属性: {{ pet.WaterAT }}</p>
+            <p v-if="pet.FireAT > 0">火属性: {{ pet.FireAT }}</p>
+            <p v-if="pet.WindAT > 0">风属性: {{ pet.WindAT }}</p>
+        </div>
+        <div class="pure-u-1-2">
+            <img :src="petImgUrl" style="max-height: 280px">
+        </div>
+    </div>
+
+    <table class="pure-table pure-table-horizontal" style="width:100%">
+        <thead>
+        <tr>
+            <th></th><th>初始值</th><th>当前值</th><th>成长率</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>等级</td>
+            <td>{{ pet.BornLv }}</td>
+            <td>{{ pet.Lv }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>耐久力</td>
+            <td>{{ pet.BornPoint[0] }}</td>
+            <td>{{ pet.WorkMaxHp }}</td>
+            <td>{{ pet.GrowthHp|float2 }}</td>
+        </tr>
+        <tr>
+            <td>攻击力</td>
+            <td>{{ pet.BornPoint[1] }}</td>
+            <td>{{ pet.WorkFixStr }}</td>
+            <td>{{ pet.GrowthStr|float2 }}</td>
+        </tr>
+        <tr>
+            <td>防御力</td>
+            <td>{{ pet.BornPoint[2] }}</td>
+            <td>{{ pet.WorkFixTough }}</td>
+            <td>{{ pet.GrowthTough|float2 }}</td>
+        </tr>
+        <tr>
+            <td>敏捷力</td>
+            <td>{{ pet.BornPoint[3] }}</td>
+            <td>{{ pet.WorkFixDex }}</td>
+            <td>{{ pet.GrowthDex|float2 }}</td>
+        </tr>
+        <tr>
+            <td>总成长</td>
+            <td><button class="pure-button pure-button-primary" @click="levelup(1)">Lv+1</button></td>
+            <td><button class="pure-button pure-button-primary" @click="levelup(10)">Lv+10</button></td>
+            <td>{{ pet.Growth|float2 }}</td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            pet: {
+                BornPoint: [],
+            },
+            petImgUrl: "",
+        },
+        filters: {
+            float2: function(v) {
+                if (isNaN(v)) {
+                    return ''
+                }
+                return v.toFixed(2);
+            }
+        },
+        mounted() {
+            fetch("/api/randpet").then(function(rsp) {
+                var data = rsp.json();
+                return data;
+            }).then(function(data){
+                app.pet = data;
+                app.petImgUrl = "/f/pet/"+data.ImgNo+".gif"
+            })
+        },
+        methods: {
+            levelup: function(up) {
+                fetch("/api/levelup", {
+                    method: 'POST',
+                    body: JSON.stringify({'id':app.pet.Id, 'up':up}),
+                }).then(function(rsp) {
+                    var data = rsp.json();
+                    return data;
+                }).then(function(data){
+                    app.pet = data;
+                    app.petImgUrl = "/f/pet/"+data.ImgNo+".gif"
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

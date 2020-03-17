@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"io"
+	"math/rand"
 	"net/http"
-
-	"github.com/gorilla/mux"
 
 	"github.com/zii/pet-sim/biz"
 
@@ -28,14 +27,8 @@ func Render(w io.Writer, path string, args pongo2.Context) {
 }
 
 func r_index(w http.ResponseWriter, r *http.Request) {
-	//Render(w, "test.html", pongo2.Context{})
-	http.ServeFile(w, r, "tpl/test.html")
-}
-
-func r_newpet(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	no := base.ToInt(vars["id"])
-	fmt.Println("no:", no)
+	i := rand.Intn(len(biz.EnemyNoList))
+	no := biz.EnemyNoList[i]
 	eb := biz.GetEnemyBase(no)
 	if eb == nil {
 		http.NotFound(w, r)
@@ -49,9 +42,47 @@ func r_newpet(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < 100; i++ {
 		biz.PetLevelUp(char)
 	}
-	fmt.Println("newchar:", char.Name, char.Lv, char.WorkMaxHp, char.WorkFixStr, char.WorkFixTough, char.WorkFixDex)
-	Render(w, "newpet.html", pongo2.Context{"pet": char})
+	http.ServeFile(w, r, "tpl/index.html")
+	//Render(w, "index.html", pongo2.Context{"pet": char})
 }
 
-func r_pet(w http.ResponseWriter, r *http.Request) {
+func api_randpet(w http.ResponseWriter, r *http.Request) {
+	i := rand.Intn(len(biz.EnemyNoList))
+	no := biz.EnemyNoList[i]
+	eb := biz.GetEnemyBase(no)
+	if eb == nil {
+		http.NotFound(w, r)
+		return
+	}
+	char := biz.CreateEnemy(no, 1)
+	if char == nil {
+		http.NotFound(w, r)
+		return
+	}
+	//for i := 0; i < 100; i++ {
+	//	biz.PetLevelUp(char)
+	//}
+	w.Header().Add("Conent-Type", "application/json")
+	b, _ := json.Marshal(char)
+	w.Write(b)
+}
+
+func api_levelup(w http.ResponseWriter, r *http.Request) {
+	var args = struct {
+		Id int `json:"id"`
+		Up int `json:"up"`
+	}{}
+	dec := json.NewDecoder(r.Body)
+	dec.Decode(&args)
+	pet := biz.GetChar(args.Id)
+	if pet == nil {
+		http.NotFound(w, r)
+		return
+	}
+	for i := 0; i < args.Up; i++ {
+		biz.PetLevelUp(pet)
+	}
+	w.Header().Add("Conent-Type", "application/json")
+	b, _ := json.Marshal(pet)
+	w.Write(b)
 }

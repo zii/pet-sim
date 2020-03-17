@@ -192,6 +192,7 @@ type Enemy struct {
 
 // 宠物集合
 var EnemyBaseSet *sync.Map
+var EnemyNoList []int
 
 func InitEnemyBase(filename string) {
 	f, err := os.Open(filename)
@@ -253,6 +254,7 @@ func InitEnemyBase(filename string) {
 		eb.LimitLevel = base.ToInt(rows[54])
 		eb.Species = base.ToInt(rows[55])
 		EnemyBaseSet.Store(eb.No, eb)
+		EnemyNoList = append(EnemyNoList, eb.No)
 	}
 }
 
@@ -276,6 +278,8 @@ func CreateEnemy(ebno int, baselevel int) *Char {
 		return ((level-1)*eb.LvUpPoint + eb.InitNum) * v
 	}
 	tp := *eb
+	// 这里才是关键, 如果不加这一段, 同类的宠物几乎没有区别, 这初始的三项的变动幅度=总成长的浮动幅度
+	// 也就是说总成长一开始就决定了
 	tp.BaseVital += rand.Intn(5) - 2
 	tp.BaseStr += rand.Intn(5) - 2
 	tp.BaseTgh += rand.Intn(5) - 2

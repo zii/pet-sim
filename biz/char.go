@@ -6,6 +6,10 @@ import (
 	"sync"
 )
 
+const (
+	CHAR_MAXUPLEVEL = 140
+)
+
 // 角色类型
 const (
 	CHAR_TYPENONE = 0
@@ -150,7 +154,16 @@ func InitNewChar(char *Char) {
 	charSet.Store(char.Id, char)
 }
 
-// 计算出当前四维
+func GetChar(id int) *Char {
+	v, ok := charSet.Load(id)
+	if !ok {
+		return nil
+	}
+	c, _ := v.(*Char)
+	return c
+}
+
+// 只是对四维形状的一个修整, 不影响大局
 func Char_initCharWork(char *Char) {
 	char.WorkFixDex = char.Dex / 100
 	char.WorkFixVital = char.Vital / 100
@@ -167,6 +180,9 @@ func Char_complianceParameter(char *Char) {
 }
 
 func PetLevelUp(char *Char) {
+	if char.Lv >= CHAR_MAXUPLEVEL {
+		return
+	}
 	var ranktab = []struct {
 		min int
 		max int
@@ -185,6 +201,7 @@ func PetLevelUp(char *Char) {
 		param[j] = 1.0
 	}
 	petrank := char.PetRank
+	// 这个frand和param 只是让每一次升级过程看起来玄妙一些 但100多级平均下来 是很稳定的一个期望值 不影响总成长
 	frand := float32(ranktab[petrank].min+rand.Intn(ranktab[petrank].max-ranktab[petrank].min+1)) * 0.01
 	vital := float32(char.AllocPoint[0])
 	str := float32(char.AllocPoint[1])
