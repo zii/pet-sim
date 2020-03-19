@@ -6,91 +6,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>石器时代宠物模拟器</title>
     <link rel="shotcut icon" href="/f/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="/f/pure-min.css">
+    <link rel="stylesheet" href="/f/bootstrap-4.4.1-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/f/marketing.css">
     <script src="/f/vue.js"></script>
+    <script src="/f/jquery-3.4.1.slim.min.js"></script>
+    <script src="/f/bootstrap-4.4.1-dist/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 <div id="app">
-<div class="header">
-    <div class="home-menu pure-menu pure-menu-horizontal ">
-        <ul class="pure-menu-list">
-            <li class="pure-menu-item">
-                <a href="/"><img src="/f/logo.gif" height="40px"></a>
+    <nav class="navbar navbar-expand-sm home-menu">
+        <a class="navbar-brand" href="/">
+            <img src="/f/logo.gif" class="d-inline-block align-center" height="40px">
+            <span style="color:white">石器时代宠物模拟器</span>
+        </a>
+    </nav>
+    <div class="nav1">
+        捕获到1级宠物！
+        <a href="javascript:void(0)" @click="getpet(0)">随机遇敌</a>,
+        <a href="javascript:void(0)" @click="getpet(pet.PetId)">原地遇敌</a>
+    </div>
+
+    <div class="container-fluid main">
+        <div class="row">
+            <div class="col" style="padding-top: 5px">
+                <p><h5>{{ pet.Name }}</h5></p>
+                <p>No. {{ pet.PetId}}-{{ pet.Id }}</p>
+                <table style="min-width: 170px">
+                    <tr v-if="pet.EarthAT > 0">
+                        <td  style="width: 60px">地属性:</td>
+                        <td>
+                            <div class="progress" style="height: 16px">
+                                <div class="progress-bar bg-success" role="progressbar" :style="{width:pet.EarthAT+'%'}" :aria-valuenow="pet.EarthAT" aria-valuemin="0" aria-valuemax="100">{{pet.EarthAT}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr v-if="pet.WaterAT > 0">
+                        <td  style="width: 60px">水属性:</td>
+                        <td>
+                            <div class="progress" style="height: 16px">
+                                <div class="progress-bar" role="progressbar" :style="{width:pet.WaterAT+'%'}" :aria-valuenow="pet.WaterAT" aria-valuemin="0" aria-valuemax="100">{{pet.WaterAT}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr v-if="pet.FireAT > 0">
+                        <td  style="width: 60px">火属性:</td>
+                        <td>
+                            <div class="progress" style="height: 16px">
+                                <div class="progress-bar bg-danger" role="progressbar" :style="{width:pet.FireAT+'%'}" :aria-valuenow="pet.FireAT" aria-valuemin="0" aria-valuemax="100">{{pet.FireAT}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr v-if="pet.WindAT > 0">
+                        <td  style="width: 60px">风属性:</td>
+                        <td>
+                            <div class="progress" style="height: 16px">
+                                <div class="progress-bar bg-warning" role="progressbar" :style="{width:pet.WindAT+'%'}" :aria-valuenow="pet.WindAT" aria-valuemin="0" aria-valuemax="100">{{pet.WindAT}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr v-if="pet.EarthAT+pet.WaterAT+pet.FireAT+pet.WindAT == 0">
+                        <td  style="width: 60px">无属性:</td>
+                        <td>
+                            <div class="progress" style="height: 16px">
+                                <div class="progress-bar bg-warning" role="progressbar" style="0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col">
+                <div class="media" style="min-height: 150px">
+                    <img :src="petImgUrl" class="align-self-center mx-auto" style="max-height: 280px">
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" :class="{active:curtab==1}" @click="curtab=1" href="javascrip:void(0)">资料</a>
             </li>
-            <li class="pure-menu-item" style="vertical-align: bottom;padding-bottom: 4px">
-                石器时代宠物模拟器
+            <li class="nav-item">
+                <a class="nav-link" :class="{active:curtab==2}" @click="curtab=2" href="javascrip:void(0)">技能({{ pet.Slot }})</a>
             </li>
         </ul>
-    </div>
-    <div class="nav">
-        获得一只 [{{ pet.Name }}]！
-    </div>
-</div>
 
-<div class="container">
-    <div class="pure-g">
-        <div class="pure-u-1-2">
-            <p>{{ pet.Name }}</p>
-            <p>ID: {{ pet.Id }}</p>
-            <p v-if="pet.EarthAT > 0">地属性: {{ pet.EarthAT }}</p>
-            <p v-if="pet.WaterAT > 0">水属性: {{ pet.WaterAT }}</p>
-            <p v-if="pet.FireAT > 0">火属性: {{ pet.FireAT }}</p>
-            <p v-if="pet.WindAT > 0">风属性: {{ pet.WindAT }}</p>
-        </div>
-        <div class="pure-u-1-2">
-            <img :src="petImgUrl" style="max-height: 280px">
-        </div>
+        <table class="table table-bordered" v-if="curtab==1">
+            <thead>
+            <tr>
+                <th scope="col"></th><th scope="col">初始值</th><th scope="col">当前值</th><th scope="col">成长率</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>等级</td>
+                <td>{{ pet.BornLv }}</td>
+                <td>{{ pet.Lv }}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>耐久力</td>
+                <td>{{ pet.BornPoint[0] }}</td>
+                <td>{{ pet.WorkMaxHp }}</td>
+                <td>{{ pet.GrowthHp|float2 }}</td>
+            </tr>
+            <tr>
+                <td>攻击力</td>
+                <td>{{ pet.BornPoint[1] }}</td>
+                <td>{{ pet.WorkFixStr }}</td>
+                <td>{{ pet.GrowthStr|float2 }}</td>
+            </tr>
+            <tr>
+                <td>防御力</td>
+                <td>{{ pet.BornPoint[2] }}</td>
+                <td>{{ pet.WorkFixTough }}</td>
+                <td>{{ pet.GrowthTough|float2 }}</td>
+            </tr>
+            <tr>
+                <td>敏捷力</td>
+                <td>{{ pet.BornPoint[3] }}</td>
+                <td>{{ pet.WorkFixDex }}</td>
+                <td>{{ pet.GrowthDex|float2 }}</td>
+            </tr>
+            <tr>
+                <td>总成长</td>
+                <td><button class="btn btn-danger" :disabled="disable1" @click="levelup(1)">Lv+1</button></td>
+                <td><button class="btn btn-danger" :disabled="disable2" @click="levelup(10)">Lv+10</button></td>
+                <td><b>{{ pet.Growth|float2 }}</b></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-bordered" style="width:100%" v-if="curtab==2">
+            <thead>
+            <tr>
+                <th>技能格</th><th>技能</th><th>描述</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(sk, index) in pet.PetSkills" v-if="index < pet.Slot">
+                <td width="70px">{{ index+1 }}</td>
+                <td width="100px"><span v-if="sk != null">{{ sk.Name }}</span></td>
+                <td><span v-if="sk != null">{{ sk.Des }}</span></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <hr>
+        <footer class="container">
+            <p align="center">© cat 2020</p>
+        </footer>
     </div>
-
-    <table class="pure-table pure-table-horizontal" style="width:100%">
-        <thead>
-        <tr>
-            <th></th><th>初始值</th><th>当前值</th><th>成长率</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>等级</td>
-            <td>{{ pet.BornLv }}</td>
-            <td>{{ pet.Lv }}</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>耐久力</td>
-            <td>{{ pet.BornPoint[0] }}</td>
-            <td>{{ pet.WorkMaxHp }}</td>
-            <td>{{ pet.GrowthHp|float2 }}</td>
-        </tr>
-        <tr>
-            <td>攻击力</td>
-            <td>{{ pet.BornPoint[1] }}</td>
-            <td>{{ pet.WorkFixStr }}</td>
-            <td>{{ pet.GrowthStr|float2 }}</td>
-        </tr>
-        <tr>
-            <td>防御力</td>
-            <td>{{ pet.BornPoint[2] }}</td>
-            <td>{{ pet.WorkFixTough }}</td>
-            <td>{{ pet.GrowthTough|float2 }}</td>
-        </tr>
-        <tr>
-            <td>敏捷力</td>
-            <td>{{ pet.BornPoint[3] }}</td>
-            <td>{{ pet.WorkFixDex }}</td>
-            <td>{{ pet.GrowthDex|float2 }}</td>
-        </tr>
-        <tr>
-            <td>总成长</td>
-            <td><button class="pure-button pure-button-primary" @click="levelup(1)">Lv+1</button></td>
-            <td><button class="pure-button pure-button-primary" @click="levelup(10)">Lv+10</button></td>
-            <td>{{ pet.Growth|float2 }}</td>
-        </tr>
-        </tbody>
-
-    </table>
-</div>
 </div>
 
 <script>
@@ -99,8 +165,12 @@
         data: {
             pet: {
                 BornPoint: [],
+                PetSkills: [],
+                Lv: 0,
             },
             petImgUrl: "",
+            curtab: 1,
+            menuVisible: true,
         },
         filters: {
             float2: function(v) {
@@ -110,22 +180,40 @@
                 return v.toFixed(2);
             }
         },
-        mounted() {
-            fetch("/api/randpet").then(function(rsp) {
-                var data = rsp.json();
-                return data;
-            }).then(function(data){
-                app.pet = data;
-                app.petImgUrl = "/f/pet/"+data.ImgNo+".gif"
-            })
+        computed: {
+            disable1: function() {
+                return this.pet.Lv >= 140;
+            },
+            disable2: function() {
+                return this.pet.Lv < 7 || this.pet.Lv >= 140;
+            }
+        },
+        created() {
+            const parsedUrl = new URL(window.location.href);
+            let no = parsedUrl.searchParams.get("no") || 0;
+            this.getpet(no);
         },
         methods: {
+            getpet: function(no) {
+                no = parseInt(no);
+                fetch("/api/getpet", {
+                    method: 'POST',
+                    body: JSON.stringify({'no':no}),
+                }).then(function(rsp) {
+                    let data = rsp.json();
+                    return data;
+                }).then(function(data){
+                    app.pet = data;
+                    app.petImgUrl = "/f/pet/"+data.ImgNo+".gif";
+                    window.history.pushState('','','?no='+data.PetId);
+                });
+            },
             levelup: function(up) {
                 fetch("/api/levelup", {
                     method: 'POST',
                     body: JSON.stringify({'id':app.pet.Id, 'up':up}),
                 }).then(function(rsp) {
-                    var data = rsp.json();
+                    let data = rsp.json();
                     return data;
                 }).then(function(data){
                     app.pet = data;

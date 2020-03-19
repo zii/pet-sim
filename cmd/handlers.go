@@ -27,28 +27,24 @@ func Render(w io.Writer, path string, args pongo2.Context) {
 }
 
 func r_index(w http.ResponseWriter, r *http.Request) {
-	i := rand.Intn(len(biz.EnemyNoList))
-	no := biz.EnemyNoList[i]
-	eb := biz.GetEnemyBase(no)
-	if eb == nil {
-		http.NotFound(w, r)
-		return
-	}
-	char := biz.CreateEnemy(no, 1)
-	if char == nil {
-		http.NotFound(w, r)
-		return
-	}
-	for i := 0; i < 100; i++ {
-		biz.PetLevelUp(char)
-	}
 	http.ServeFile(w, r, "tpl/index.html")
 	//Render(w, "index.html", pongo2.Context{"pet": char})
 }
 
-func api_randpet(w http.ResponseWriter, r *http.Request) {
-	i := rand.Intn(len(biz.EnemyNoList))
-	no := biz.EnemyNoList[i]
+func api_getpet(w http.ResponseWriter, r *http.Request) {
+	var args = struct {
+		No int `json:"no"`
+	}{}
+	dec := json.NewDecoder(r.Body)
+	dec.Decode(&args)
+
+	var no int
+	if args.No != 0 {
+		no = args.No
+	} else {
+		i := rand.Intn(len(biz.EnemyNoList))
+		no = biz.EnemyNoList[i]
+	}
 	eb := biz.GetEnemyBase(no)
 	if eb == nil {
 		http.NotFound(w, r)
@@ -59,9 +55,6 @@ func api_randpet(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	//for i := 0; i < 100; i++ {
-	//	biz.PetLevelUp(char)
-	//}
 	w.Header().Add("Conent-Type", "application/json")
 	b, _ := json.Marshal(char)
 	w.Write(b)

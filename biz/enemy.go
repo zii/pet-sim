@@ -151,13 +151,8 @@ type EnemyBase struct {
 	Stone        int
 	Drunk        int
 	Confusion    int
-	PetSkill1    int
-	PetSkill2    int
-	PetSkill3    int
-	PetSkill4    int
-	PetSkill5    int
-	PetSkill6    int
-	PetSkill7    int
+	PetSkillIds  [9]int
+	PetSkills    [9]*Skill
 	Rare         int
 	Critical     int
 	Counter      int
@@ -207,6 +202,9 @@ func InitEnemyBase(filename string) {
 			break
 		}
 		l = strings.TrimSpace(l)
+		if l == "" {
+			continue
+		}
 		rows := strings.Split(l, ",")
 		if len(rows) < 56 {
 			log.Fatalln("字段缺失!", l)
@@ -237,17 +235,18 @@ func InitEnemyBase(filename string) {
 		eb.Stone = base.ToInt(rows[22])
 		eb.Drunk = base.ToInt(rows[23])
 		eb.Confusion = base.ToInt(rows[24])
-		eb.PetSkill1 = base.ToInt(rows[25])
-		eb.PetSkill2 = base.ToInt(rows[26])
-		eb.PetSkill3 = base.ToInt(rows[27])
-		eb.PetSkill4 = base.ToInt(rows[28])
-		eb.PetSkill5 = base.ToInt(rows[29])
-		eb.PetSkill6 = base.ToInt(rows[30])
-		eb.PetSkill7 = base.ToInt(rows[31])
+		eb.Slot = base.ToInt(rows[35])
+		for j := 0; j < 7; j++ {
+			s := rows[25+j]
+			if s != "" {
+				skid := base.ToInt(s)
+				eb.PetSkillIds[j] = skid
+				eb.PetSkills[j] = GetSkill(skid)
+			}
+		}
 		eb.Rare = base.ToInt(rows[32])
 		eb.Critical = base.ToInt(rows[33])
 		eb.Counter = base.ToInt(rows[34])
-		eb.Slot = base.ToInt(rows[35])
 		eb.ImgNo = base.ToInt(rows[36])
 		eb.PetFlag = base.ToInt(rows[37])
 		eb.Size = base.ToInt(rows[38])
@@ -325,13 +324,10 @@ func CreateEnemy(ebno int, baselevel int) *Char {
 	char.PetId = tp.No
 	char.Critical = tp.Critical
 	char.Counter = tp.Counter
-	char.PetSkill1 = tp.PetSkill1
-	char.PetSkill2 = tp.PetSkill2
-	char.PetSkill3 = tp.PetSkill3
-	char.PetSkill4 = tp.PetSkill4
-	char.PetSkill5 = tp.PetSkill5
-	char.PetSkill6 = tp.PetSkill6
-	char.PetSkill7 = tp.PetSkill7
+	char.PetSkills = tp.PetSkills
+	for _, id := range tp.PetSkillIds {
+		char.PetSkillIds = append(char.PetSkillIds, id)
+	}
 	char.PetRank = Enemy_getRank(ebno)
 	InitNewChar(char)
 	Char_complianceParameter(char)

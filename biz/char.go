@@ -72,43 +72,38 @@ const (
 )
 
 type Char struct {
-	Id         int
-	Name       string
-	ImgNo      int
-	WhichType  int // 角色类型 CHAR_TYPE
-	DuelPoint  int
-	Vital      int // 体力
-	Str        int // 力量
-	Tough      int // 坚韧
-	Dex        int // 敏捷
-	EarthAT    int
-	WaterAT    int
-	FireAT     int // 火属性
-	WindAT     int
-	ModAI      int
-	VariableAI int
-	Slot       int
-	Poison     int
-	Paralysis  int
-	Sleep      int
-	Stone      int
-	Drunk      int
-	Confusion  int
-	Rare       int
-	PetId      int // EnemyBase.No, TEMPNO
-	Critical   int
-	Counter    int
-	Luck       int
-	PetSkill1  int
-	PetSkill2  int
-	PetSkill3  int
-	PetSkill4  int
-	PetSkill5  int
-	PetSkill6  int
-	PetSkill7  int
-	PetRank    int
-	Exp        int
-	AllocPoint [4]int
+	Id          int
+	Name        string
+	ImgNo       int
+	WhichType   int // 角色类型 CHAR_TYPE
+	DuelPoint   int
+	Vital       int // 体力
+	Str         int // 力量
+	Tough       int // 坚韧
+	Dex         int // 敏捷
+	EarthAT     int
+	WaterAT     int
+	FireAT      int // 火属性
+	WindAT      int
+	ModAI       int
+	VariableAI  int
+	Slot        int
+	Poison      int
+	Paralysis   int
+	Sleep       int
+	Stone       int
+	Drunk       int
+	Confusion   int
+	Rare        int
+	PetId       int // EnemyBase.No, TEMPNO
+	Critical    int
+	Counter     int
+	Luck        int
+	PetSkillIds []int
+	PetSkills   [9]*Skill
+	PetRank     int
+	Exp         int
+	AllocPoint  [4]int
 
 	WorkTactics            int
 	WorkTacticsOption      string
