@@ -79,6 +79,10 @@ a:visited {
 .table {
     background-color: white;
 }
+.td1 {
+}
 .progress {
     background-color: #dadada;
+    height: 16px;
+    min-width: 60px;
 }

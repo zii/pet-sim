@@ -7,10 +7,8 @@
     <title>石器时代宠物模拟器</title>
     <link rel="shotcut icon" href="/f/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/f/bootstrap-4.4.1-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/f/marketing.css">
+    <link rel="stylesheet" href="/f/marketing.css?3">
     <script src="/f/vue.js"></script>
-    <script src="/f/jquery-3.4.1.slim.min.js"></script>
-    <script src="/f/bootstrap-4.4.1-dist/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -29,53 +27,53 @@
 
     <div class="container-fluid main">
         <div class="row">
-            <div class="col" style="padding-top: 5px">
+            <div class="col" style="padding-top: 5px;max-width: 40%">
                 <p><h5>{{ pet.Name }}</h5></p>
                 <p>No. {{ pet.PetId}}-{{ pet.Id }}</p>
-                <table style="min-width: 170px">
+                <table style="min-width: 130px;">
                     <tr v-if="pet.EarthAT > 0">
-                        <td  style="width: 60px">地属性:</td>
+                        <td class="td1">地属性:</td>
                         <td>
-                            <div class="progress" style="height: 16px">
-                                <div class="progress-bar bg-success" role="progressbar" :style="{width:pet.EarthAT+'%'}" :aria-valuenow="pet.EarthAT" aria-valuemin="0" aria-valuemax="100">{{pet.EarthAT}}</div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" :style="{width:barminw(1)+'%'}" :aria-valuenow="pet.EarthAT" aria-valuemin="0" aria-valuemax="100">{{pet.EarthAT}}</div>
                             </div>
                         </td>
                     </tr>
                     <tr v-if="pet.WaterAT > 0">
-                        <td  style="width: 60px">水属性:</td>
+                        <td class="td1">水属性:</td>
                         <td>
-                            <div class="progress" style="height: 16px">
-                                <div class="progress-bar" role="progressbar" :style="{width:pet.WaterAT+'%'}" :aria-valuenow="pet.WaterAT" aria-valuemin="0" aria-valuemax="100">{{pet.WaterAT}}</div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" :style="{width:barminw(2)+'%'}" :aria-valuenow="pet.WaterAT" aria-valuemin="0" aria-valuemax="100">{{pet.WaterAT}}</div>
                             </div>
                         </td>
                     </tr>
                     <tr v-if="pet.FireAT > 0">
-                        <td  style="width: 60px">火属性:</td>
+                        <td class="td1">火属性:</td>
                         <td>
-                            <div class="progress" style="height: 16px">
-                                <div class="progress-bar bg-danger" role="progressbar" :style="{width:pet.FireAT+'%'}" :aria-valuenow="pet.FireAT" aria-valuemin="0" aria-valuemax="100">{{pet.FireAT}}</div>
+                            <div class="progress">
+                                <div class="progress-bar bg-danger" role="progressbar" :style="{width:barminw(3)+'%'}" :aria-valuenow="pet.FireAT" aria-valuemin="0" aria-valuemax="100">{{pet.FireAT}}</div>
                             </div>
                         </td>
                     </tr>
                     <tr v-if="pet.WindAT > 0">
-                        <td  style="width: 60px">风属性:</td>
+                        <td class="td1">风属性:</td>
                         <td>
-                            <div class="progress" style="height: 16px">
-                                <div class="progress-bar bg-warning" role="progressbar" :style="{width:pet.WindAT+'%'}" :aria-valuenow="pet.WindAT" aria-valuemin="0" aria-valuemax="100">{{pet.WindAT}}</div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" role="progressbar" :style="{width:barminw(4)+'%'}" :aria-valuenow="pet.WindAT" aria-valuemin="0" aria-valuemax="100">{{pet.WindAT}}</div>
                             </div>
                         </td>
                     </tr>
                     <tr v-if="pet.EarthAT+pet.WaterAT+pet.FireAT+pet.WindAT == 0">
-                        <td  style="width: 60px">无属性:</td>
+                        <td class="td1">无属性:</td>
                         <td>
-                            <div class="progress" style="height: 16px">
+                            <div class="progress">
                                 <div class="progress-bar bg-warning" role="progressbar" style="0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </td>
                     </tr>
                 </table>
             </div>
-            <div class="col">
+            <div class="col" style="max-width: 60%">
                 <div class="media" style="min-height: 150px">
                     <img :src="petImgUrl" class="align-self-center mx-auto" style="max-height: 280px">
                 </div>
@@ -219,6 +217,22 @@
                     app.pet = data;
                     app.petImgUrl = "/f/pet/"+data.ImgNo+".gif"
                 })
+            },
+            barminw: function(a) {
+                let v = 0;
+                if (a == 1) {
+                    v = this.pet.EarthAT;
+                } else if (a == 2) {
+                    v = this.pet.WaterAT;
+                } else if (a == 3) {
+                    v = this.pet.FireAT;
+                } else if (a == 4) {
+                    v = this.pet.WindAT;
+                }
+                if (v > 0 && v < 20) {
+                    v = 20;
+                }
+                return v;
             }
         }
     })
