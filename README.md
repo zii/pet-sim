@@ -11,4 +11,4 @@
 
 ### 截图
 
-![SCREEN](https://raw.githubusercontent.com/zii/pet-sim/master/bin/data/screenshot.jpg)
+<img src="https://raw.githubusercontent.com/zii/pet-sim/master/bin/data/screenshot.jpg" width="40%">
