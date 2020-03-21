@@ -9,6 +9,8 @@
 
 本人是石器的忠实玩家，一直对成长率这一核心机制非常着迷，相信每个石器玩家都曾有过拥有极品宠物的梦想。我从石器2.5源代码中单独提取出了宠物的数值系统与成长率算法, 做成了一个模拟器, 专注于宠物培养这一玩法. 白虎不是梦!
 
+### 试玩 https://pet.catlabs.cn
+
 ### 截图
 
 <img src="https://raw.githubusercontent.com/zii/pet-sim/master/bin/data/screenshot.jpg" width="40%">
