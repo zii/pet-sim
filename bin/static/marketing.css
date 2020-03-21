@@ -24,6 +24,10 @@ label {
     color: #34495e;
 }
 
+#app {
+    max-width: 460px;
+    margin: 0 auto;
+}
 .home-menu {
     background: #1f8dd6; /*#2d3e50;*/
     color: white;
