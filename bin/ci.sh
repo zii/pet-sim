@@ -3,7 +3,7 @@
 set -e
 
 SSH1="root@catlabs.cn"
-DIR1="$SSH1:~/pet-sim/bin"
+DIR1="$SSH1:~/catlabs/pet-sim/bin"
 
 deploy() {
     echo "build $1..."
@@ -20,7 +20,7 @@ remote() {
     ssh $SSH1 << EOF
 #!/bin/bash
 set -e
-cd ~/pet-sim/bin
+cd ~/catlabs/pet-sim/bin
 gzip -df server.gz
 supervisorctl restart pet
 EOF
